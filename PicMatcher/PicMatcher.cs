@@ -4,30 +4,25 @@ using Xamarin.Forms;
 
 namespace PicMatcher
 {
-	public class PicMatcher : NavigationPage
+	public class PicMatcher : CarouselPage
 	{
 
 		public PicMatcher ()
 		{
 			/**
-			 * Create main navigation page with launch screen
+			 * Init app carousel:
+			 *   - Add home page
+			 *   - Add questions
 			 */
+			this.Title = "PicMatcher";
+			this.Children.Add(new HomePage());
 
-			var button = new Button { Text = "Launch" };
+			var game = new Game ();
 
-			button.Clicked += (object sender, EventArgs e) => {
-				this.PushAsync(new QuizPage());
-			};
-
-			this.PushAsync (new ContentPage {
-				Title = "PicMatcher",
-				Content = new StackLayout {
-					VerticalOptions = LayoutOptions.CenterAndExpand,
-					Children = {
-						button
-					}
-				}
-			});
+			// Start from 1 as first page is taken
+			for (var i = 1; i <= game.Total; i += 1) {
+				this.Children.Add (new QuestionPage (game.Next ()));
+			}
 		}
 
 	}

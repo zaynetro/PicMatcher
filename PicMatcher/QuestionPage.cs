@@ -7,12 +7,11 @@ namespace PicMatcher
 	public class QuestionPage : ContentPage
 	{
 		private Question question { get; set; }
-		private int position;
 		private Image Img { get; set; }
 
 		public QuestionPage () {}
 
-		public QuestionPage (Question q, int pos)
+		public QuestionPage (Question q)
 		{
 			/**
 			 * Init single question page
@@ -23,7 +22,6 @@ namespace PicMatcher
 			 */
 
 			question = q;
-			position = pos;
 
 			Img = new Image {
 				Source = QuestionPage.WrapImage(question.Image),
@@ -88,12 +86,19 @@ namespace PicMatcher
 
 			var Parent = (CarouselPage)this.Parent;
 
-			Action NextPage = async () => {
-				await Task.Delay(500);
-				Parent.CurrentPage = Parent.Children[position + 1];
+			Action RemovePrevious = async () => {
+				await Task.Delay (500);
+				Parent.Children.Remove (this);
 			};
 
-			if(position < Parent.Children.Count - 1)
+			Action NextPage = async () => {
+				await Task.Delay(500);
+				Parent.CurrentPage = Parent.Children[2];
+				RemovePrevious();
+			};
+
+			var count = Parent.Children.Count;
+			if(Parent.Children.Count > 2)
 				Device.BeginInvokeOnMainThread(NextPage);
 		}
 
@@ -104,7 +109,8 @@ namespace PicMatcher
 		private static UriImageSource WrapImage(string url) {
 			return new UriImageSource {
 				Uri = new Uri(url),
-				CachingEnabled = true
+				CachingEnabled = true,
+				CacheValidity = new TimeSpan(5, 0, 0, 0)
 			};
 		}
 	}
