@@ -6,25 +6,35 @@ namespace PicMatcher
 {
 	public class PicMatcher : CarouselPage
 	{
+		private Game game;
 
 		public PicMatcher ()
 		{
 			/**
 			 * Init app carousel:
 			 *   - Add home page
-			 *   - Add questions
+			 *   - Init game
 			 */
 			this.Title = "PicMatcher";
 			this.Children.Add(new HomePage());
 
-			var game = new Game ();
+			game = new Game ();
+			game.LoadAndAdd ();
 
-			// Start from 1 as first page is taken
-			for (var i = 1; i <= game.Total; i += 1) {
-				this.Children.Add (new QuestionPage (game.Next ()));
-			}
+			game.Added += (object sender, EventArgs e) => {
+				this.Children.Add (new QuestionPage (game.Next()));
+			};
 		}
 
+		public void NextPage() {
+			var i = Children.IndexOf(CurrentPage);
+			if(i < Children.Count - 1) CurrentPage = Children [i + 1];
+			NextQuestion ();
+		}
+
+		public void NextQuestion () {
+			game.LoadAndAdd();
+		}
 	}
 }
 

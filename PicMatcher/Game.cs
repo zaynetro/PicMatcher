@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace PicMatcher
 {
+	public delegate void AddEventHandler(object sender, EventArgs e);
+
 	public class Game
 	{
-		private IList<Question> questions;
-		private Random rnd = new Random ();
+		private IList<Question> questions = new ObservableCollection<Question>();
 
-		public int Total = 0;
-		private List<int> used = new List<int> ();
+		private int current = 0;
+
+		public event AddEventHandler Added;
+
+		protected virtual void OnAdded(EventArgs e) {
+			if (Added != null)
+				Added (this, e);
+		}
 
 		public Game ()
 		{
-			/**
-			 * Init game
-			 */
-			questions = Question.All;
-			Total = questions.Count;
+			LoadAndAdd ();
 		}
 
 		/**
 		 * Return next question
 		 */
-		public Question Next()
-		{
+		public Question Next() {
 			if (questions.Count == 0)
-				throw new Exception ("Questions collection is empty");
+				throw new Exception ("No more questions");
 
-			int i;
-			do {
-				i = rnd.Next (questions.Count);
-			} while(used.Contains (i) == true);
+			return questions [current++];
+		}
 
-			used.Add (i);
-
-			var q = questions [i];
-			return q;
+		public async void LoadAndAdd() {
+			questions.Add (await Question.Load ());
+			OnAdded (EventArgs.Empty);
 		}
 	}
 }

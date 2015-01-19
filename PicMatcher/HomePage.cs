@@ -10,8 +10,8 @@ namespace PicMatcher
 			var button = new Button { Text = "Launch" };
 
 			button.Clicked += (object sender, EventArgs e) => {
-				var Parent = (CarouselPage)this.Parent;
-				Parent.CurrentPage = Parent.Children[1];
+				var Parent = (PicMatcher)this.Parent;
+				Parent.NextPage();
 			};
 
 			this.Content = new StackLayout {

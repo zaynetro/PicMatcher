@@ -24,12 +24,12 @@ namespace PicMatcher
 			question = q;
 
 			Img = new Image {
-				Source = QuestionPage.WrapImage(question.Image),
-				MinimumWidthRequest = 256,
-				MinimumHeightRequest = 256
+				Source = QuestionPage.WrapImage(question.Picture),
+				WidthRequest = 256,
+				HeightRequest = 256
 			};
 
-			var answers = question.GetAnswers ();
+			var answers = question.Answers;
 			var buttons = new Button[4];
 
 			var AnswersLayout = new Grid {
@@ -48,7 +48,7 @@ namespace PicMatcher
 			for (var i = 0; i < 2; i++) {
 				for (var j = 0; j < 2; j++) {
 					var k = i * 2 + j;
-					buttons [k] = new Button { Text = answers [k] };
+					buttons [k] = new Button { Text = answers [k].Name };
 					buttons [k].Clicked += onAnswerClicked;
 					AnswersLayout.Children.Add (buttons [k], i, j);
 				}
@@ -84,7 +84,7 @@ namespace PicMatcher
 				Img.Source = QuestionPage.WrapImage(Question.WrongImg);
 			}
 
-			var Parent = (CarouselPage)this.Parent;
+			var Parent = (PicMatcher)this.Parent;
 
 			Action RemovePrevious = async () => {
 				await Task.Delay (500);
@@ -93,7 +93,7 @@ namespace PicMatcher
 
 			Action NextPage = async () => {
 				await Task.Delay(500);
-				Parent.CurrentPage = Parent.Children[2];
+				Parent.NextPage();
 				RemovePrevious();
 			};
 

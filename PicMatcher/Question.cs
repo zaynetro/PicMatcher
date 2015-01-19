@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace PicMatcher
 {
 	public class Question
 	{
 
-		private Random rnd = new Random();
+//		private Random rnd = new Random();
 
 		/**
 		 * Urls to correct and wrong icons
@@ -18,75 +22,35 @@ namespace PicMatcher
 
 		public Question () {}
 
-		public Question (string category) {}
-
 		public bool IsCorrectAnswer (string answer) {
-			return answer.ToUpper() == Answer.ToUpper();
+			return answer.ToUpper() == Answer.Name.ToUpper();
 		}
 
-		static Question() 
-		{
-			/**
-			 * All questions
-			 * TODO: load them dynamically from the server
-			 */
+		public static async Task<Question> Load() {
+			string uri = "http://10.0.2.2:3000/api/question?cat=1&lang=en";
+			var client = new HttpClient ();
+			using (var response = await client.GetAsync (uri)) {
+				if (!response.IsSuccessStatusCode)
+					throw new HttpRequestException ();
 
-			All = new ObservableCollection<Question> {
-				new Question {
-					Answer = "Orange",
-					Category = "Fruit",
-					Image = "http://pngimg.com/upload/small/orange_PNG805.png"
-				},
-
-				new Question {
-					Answer = "Apple",
-					Category = "Fruit",
-					Image = "http://www.kimmelorchard.org/images/icon_apple_braeburn.png"
-				},
-
-				new Question {
-					Answer = "Watermelon",
-					Category = "Fruit",
-					Image = "http://icons.iconarchive.com/icons/fi3ur/fruitsalad/256/watermelon-icon.png"
-				},
-
-				new Question {
-					Answer = "Strawberry",
-					Category = "Fruit",
-					Image = "http://icons.iconarchive.com/icons/ergosign/free-spring/256/strawberry-icon.png"
-				},
-
-				new Question {
-					Answer = "Peach",
-					Category = "Fruit",
-					Image = "http://www.bellybytes.com/recipe/bread/images/Peach.png"
-				}
-			};
-
-		}
-
-		/**
-		 * Get answers, where one is correct
-		 * TODO: shuffle answers
-		 */
-		public string[] GetAnswers()
-		{
-			var answers = new string[4];
-			var k = rnd.Next (4);
-			for (var i = 0; i < 4; i++) {
-				if (i == k) answers [i] = this.Answer;
-				else answers [i] = Question.All [i].Answer;
+				var content = response.Content;
+				var jsonStr = await content.ReadAsStringAsync ();
+				return JsonConvert.DeserializeObject<Question> (jsonStr); 
 			}
-			return answers;
+
 		}
 
-		public string Answer { set; get; }
+		public int Question_id { set; get; }
+
+		public string Name { set; get; }
+
+		public string Picture { set; get; }
+
+		public Answer Answer { set; get; }
 
 		public string Category { set; get; }
 
-		public string Image { set; get; }
-
-		public static IList<Question> All { set; get; }
+		public ObservableCollection<Answer> Answers { set; get; }
 	}
 }
 

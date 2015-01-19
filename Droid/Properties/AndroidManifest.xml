@@ -3,4 +3,5 @@
 	<uses-sdk android:minSdkVersion="15" />
 	<application>
 	</application>
+	<uses-permission android:name="android.permission.INTERNET" />
 </manifest>
