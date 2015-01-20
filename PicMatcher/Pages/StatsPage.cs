@@ -26,6 +26,12 @@ namespace PicMatcher
 			};
 			TotalLabel.SetBinding(Label.TextProperty, "Total");
 
+			var ForwardBtn = new Button {
+				Text = "Go forward"
+			};
+
+			ForwardBtn.Clicked += ForwardClicked;
+
 			var StatsLayout = new StackLayout {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				Children = {
@@ -44,11 +50,17 @@ namespace PicMatcher
 					new Label {
 						Text = "Total"
 					},
-					TotalLabel
+					TotalLabel,
+					ForwardBtn
 				}
 			};
 
 			Content = StatsLayout;
+		}
+
+		void ForwardClicked(object sender, EventArgs e) {
+			var Parent = (PicMatcher)this.Parent;
+			Parent.NextPage ();
 		}
 	}
 }

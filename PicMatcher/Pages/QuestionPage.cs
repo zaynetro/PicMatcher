@@ -91,7 +91,6 @@ namespace PicMatcher
 				RemovePrevious();
 			};
 
-			var count = Parent.Children.Count;
 			if(Parent.Children.Count > 2)
 				Device.BeginInvokeOnMainThread(NextPage);
 		}

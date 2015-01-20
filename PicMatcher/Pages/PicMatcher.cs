@@ -11,18 +11,18 @@ namespace PicMatcher
 
 		public PicMatcher ()
 		{
-			/**
-			 * Init app carousel:
-			 *   - Add home page
-			 *   - Init game
-			 */
 			this.Title = "PicMatcher";
-			this.Children.Add(new HomePage());
+//			this.Children.Add(new HomePage());
 
 			game = new Game ();
+			this.Children.Add (game.Next());
 
 			game.Added += (object sender, EventArgs e) => {
 				this.Children.Add (game.Next());
+			};
+
+			game.NextPage += (object sender, EventArgs e) => {
+				NextPage();
 			};
 
 			game.Error += async (object sender, EventArgs e) => {

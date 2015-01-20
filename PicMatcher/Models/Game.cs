@@ -9,12 +9,14 @@ namespace PicMatcher
 		private ObservableCollection<Question> questions = new ObservableCollection<Question>();
 
 		private int current = 0;
+		private bool IsStatPage = true;
 		public static int PerRound = 5;
 
 		public GameStats Stats;
 
 		public event EventHandler Added;
 		public event EventHandler Error;
+		public event EventHandler NextPage;
 
 		protected virtual void OnAdded(EventArgs e) {
 			if (Added != null)
@@ -26,6 +28,11 @@ namespace PicMatcher
 				Error (this, e);
 		}
 
+		protected virtual void OnNextPage(EventArgs e) {
+			if (NextPage != null)
+				NextPage (this, e);
+		}
+
 		public Game () {
 			Stats = new GameStats ();
 			LoadAndAdd ();
@@ -35,6 +42,11 @@ namespace PicMatcher
 		 * Return next question
 		 */
 		public ContentPage Next() {
+			if (IsStatPage) {
+				IsStatPage = false;
+				return new StatsPage (Stats);
+			}
+
 			if (questions.Count == 0)
 				throw new Exception ("No more questions");
 
