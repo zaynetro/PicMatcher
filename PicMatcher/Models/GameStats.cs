@@ -7,7 +7,11 @@ namespace PicMatcher
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public GameStats () {}
+		public GameStats () {
+			Correct = 0;
+			Mistakes = 0;
+			Total = 0;
+		}
 
 		int _correct;
 		public int Correct {

@@ -27,10 +27,7 @@ namespace PicMatcher
 		}
 
 		public Game () {
-			Stats = new GameStats {
-				Correct = 0,
-				Mistakes = 0
-			};
+			Stats = new GameStats ();
 			LoadAndAdd ();
 		}
 
@@ -41,9 +38,9 @@ namespace PicMatcher
 			if (questions.Count == 0)
 				throw new Exception ("No more questions");
 
-			var tmp = (current + 1) % PerRound;
+			var isRoundEnd = (current + 1) % PerRound == 0;
 
-			if (tmp == 0)
+			if (isRoundEnd)
 				return new StatsPage (Stats);
 
 			return new QuestionPage (questions [questions.Count - 1]);
