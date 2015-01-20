@@ -1,9 +1,10 @@
 ﻿using System;
-
 using Xamarin.Forms;
 
 namespace PicMatcher
 {
+	public delegate void EventHandler(object sender, EventArgs e);
+
 	public class PicMatcher : CarouselPage
 	{
 		private Game game;
@@ -19,10 +20,14 @@ namespace PicMatcher
 			this.Children.Add(new HomePage());
 
 			game = new Game ();
-			game.LoadAndAdd ();
 
 			game.Added += (object sender, EventArgs e) => {
-				this.Children.Add (new QuestionPage (game.Next()));
+				this.Children.Add (game.Next());
+			};
+
+			game.Error += async (object sender, EventArgs e) => {
+				var answer = await DisplayAlert("What a shame", "Something went wrong", "Try again", "Not now");
+				if(answer) game.LoadAndAdd();
 			};
 		}
 

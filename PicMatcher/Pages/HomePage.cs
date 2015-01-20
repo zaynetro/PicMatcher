@@ -3,6 +3,7 @@ using Xamarin.Forms;
 
 namespace PicMatcher 
 {
+
 	public class HomePage : ContentPage
 	{
 		public HomePage ()

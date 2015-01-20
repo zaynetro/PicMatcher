@@ -1,17 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Net;
 
 namespace PicMatcher
 {
+
 	public class Question
 	{
 
-//		private Random rnd = new Random();
+		public event EventHandler Correct;
+		public event EventHandler Mistake;
+
+		protected virtual void OnCorrect(EventArgs e) {
+			if (Correct != null)
+				Correct (this, e);
+		}
+
+		protected virtual void OnMistake(EventArgs e) {
+			if (Mistake != null)
+				Mistake (this, e);
+		}
+
+		public static string FormUri (int cat, string lang) {
+			return String.Format ("question?cat={0}&lang={1}", cat, lang);
+		}
 
 		/**
 		 * Urls to correct and wrong icons
@@ -23,21 +34,14 @@ namespace PicMatcher
 		public Question () {}
 
 		public bool IsCorrectAnswer (string answer) {
-			return answer.ToUpper() == Answer.Name.ToUpper();
-		}
+			var isCorrect = answer.ToUpper() == Answer.Name.ToUpper();
 
-		public static async Task<Question> Load() {
-			string uri = "http://10.0.2.2:3000/api/question?cat=1&lang=en";
-			var client = new HttpClient ();
-			using (var response = await client.GetAsync (uri)) {
-				if (!response.IsSuccessStatusCode)
-					throw new HttpRequestException ();
+			if (isCorrect)
+				OnCorrect (EventArgs.Empty);
+			else
+				OnMistake (EventArgs.Empty);
 
-				var content = response.Content;
-				var jsonStr = await content.ReadAsStringAsync ();
-				return JsonConvert.DeserializeObject<Question> (jsonStr); 
-			}
-
+			return isCorrect;
 		}
 
 		public int Question_id { set; get; }

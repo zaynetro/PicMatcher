@@ -57,18 +57,12 @@ namespace PicMatcher
 			var QuestionLayout = new StackLayout {
 				VerticalOptions = LayoutOptions.CenterAndExpand,
 				Children = {
-					new Label { 
-						Text = "What is on the picture?",
-//						FontSize = Device.GetNamedSize(NamedSize.Large),
-						FontSize = 24,
-						HorizontalOptions = LayoutOptions.CenterAndExpand
-					},
 					Img,
 					AnswersLayout
 				}
 			};
 
-			this.Content = QuestionLayout;
+			Content = QuestionLayout;
 		}
 
 		/**
