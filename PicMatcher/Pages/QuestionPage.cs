@@ -8,6 +8,7 @@ namespace PicMatcher
 	{
 		private Question question { get; set; }
 		private Image Img { get; set; }
+		private Button CorrectBtn { get; set; }
 
 		public QuestionPage () {}
 
@@ -48,8 +49,16 @@ namespace PicMatcher
 			for (var i = 0; i < 2; i++) {
 				for (var j = 0; j < 2; j++) {
 					var k = i * 2 + j;
-					buttons [k] = new Button { Text = answers [k].Name };
+					buttons [k] = new Button {
+						WidthRequest = 140,
+						Text = answers [k].Name
+					};
 					buttons [k].Clicked += onAnswerClicked;
+
+					if (question.Answer.Answer_id == answers [k].Answer_id) {
+						CorrectBtn = buttons [k];
+					}
+
 					AnswersLayout.Children.Add (buttons [k], i, j);
 				}
 			}
@@ -70,29 +79,25 @@ namespace PicMatcher
 		 */
 		void onAnswerClicked(object Sender, EventArgs e) {
 			var button = (Button)Sender;
+			var delay = 400;
+
 			if (question.IsCorrectAnswer (button.Text)) {
 				// Mark as correct
 				Img.Source = QuestionPage.WrapImage(Question.CorrectImg);
 			} else {
 				// Mark as wrong
 				Img.Source = QuestionPage.WrapImage(Question.WrongImg);
+				CorrectBtn.BackgroundColor = Color.Green;
+				delay = 1000;
 			}
 
 			var Parent = (PicMatcher)this.Parent;
-
-			Action RemovePrevious = async () => {
-				await Task.Delay (500);
-				Parent.Children.Remove (this);
-			};
-
 			Action NextPage = async () => {
-				await Task.Delay(500);
-				Parent.NextPage();
-				RemovePrevious();
+				await Task.Delay(delay);
+				Parent.NextAndRemove (this);
 			};
 
-			if(Parent.Children.Count > 2)
-				Device.BeginInvokeOnMainThread(NextPage);
+			Task.Run(NextPage);
 		}
 
 		/**
