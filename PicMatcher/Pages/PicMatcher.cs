@@ -13,7 +13,6 @@ namespace PicMatcher
 		public PicMatcher ()
 		{
 			this.Title = "PicMatcher";
-//			this.Children.Add(new HomePage());
 
 			game = new Game ();
 			this.Children.Add (game.Next());
