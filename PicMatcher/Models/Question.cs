@@ -26,10 +26,9 @@ namespace PicMatcher
 
 		/**
 		 * Urls to correct and wrong icons
-		 * TODO: use a better way to grade the question
 		 */
-		public static string CorrectImg = "https://cdn3.iconfinder.com/data/icons/shadcon/512/circle-tick-256.png";
-		public static string WrongImg = "https://cdn1.iconfinder.com/data/icons/toolbar-signs/512/no-256.png";
+		public static string CorrectImg = "https://cdn2.iconfinder.com/data/icons/free-basic-icon-set-2/300/11-256.png";
+		public static string WrongImg = "https://cdn2.iconfinder.com/data/icons/free-basic-icon-set-2/300/17-256.png";
 
 		public Question () {}
 
