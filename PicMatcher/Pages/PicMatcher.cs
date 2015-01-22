@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace PicMatcher
 {
@@ -39,6 +40,16 @@ namespace PicMatcher
 
 		public void NextQuestion () {
 			game.LoadAndAdd();
+		}
+
+		public void NextAndRemove (ContentPage page) {
+			Action NextAndRemoveTask = async () => {
+				NextPage ();
+				await Task.Delay (500);
+				Children.Remove (page);
+			};
+
+			Device.BeginInvokeOnMainThread(NextAndRemoveTask);
 		}
 	}
 }
