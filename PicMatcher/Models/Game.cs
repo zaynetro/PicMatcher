@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace PicMatcher
 {
@@ -13,6 +14,8 @@ namespace PicMatcher
 		public static int PerRound = 5;
 
 		public GameStats Stats;
+
+		public GameSettings Settings;
 
 		public event EventHandler Added;
 		public event EventHandler Error;
@@ -35,6 +38,7 @@ namespace PicMatcher
 
 		public Game () {
 			Stats = new GameStats ();
+			Settings = new GameSettings ();
 			LoadAndAdd ();
 		}
 
@@ -75,6 +79,7 @@ namespace PicMatcher
 			} catch (Exception ex) {
 				var args = new ErrorEventArgs ();
 				args.Message = ex.ToString();
+				Debug.WriteLine (ex);
 				OnError (args);
 			}
 		}
