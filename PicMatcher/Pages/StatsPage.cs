@@ -5,52 +5,51 @@ namespace PicMatcher
 {
 	public class StatsPage : ContentPage
 	{
+
+		GameStats _stats;
+			
 		public StatsPage () {}
 
 		public StatsPage (GameStats Stats)
 		{
-			BindingContext = Stats;
+			_stats = Stats;
+			BindingContext = _stats;
 
 			var CorrectLabel = new Label {
-				FontSize = 15
+				FontSize = 30,
+				TextColor = Color.Green
 			};
 			CorrectLabel.SetBinding(Label.TextProperty, "Correct");
 
-			var MistakesLabel = new Label {
-				FontSize = 15
-			};
-			MistakesLabel.SetBinding(Label.TextProperty, "Mistakes");
-
 			var TotalLabel = new Label {
-				FontSize = 15
+				FontSize = 30
 			};
 			TotalLabel.SetBinding(Label.TextProperty, "Total");
 
 			var ForwardBtn = new Button {
 				Text = "Go forward"
 			};
-
 			ForwardBtn.Clicked += ForwardClicked;
 
 			var StatsLayout = new StackLayout {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalOptions = LayoutOptions.Center,
 				Children = {
 					new Label {
-						Text = "Stats",
-						FontSize = 20
+						Text = "Score",
+						FontSize = 35
 					},
-					new Label {
-						Text = "Correct"
+					new StackLayout {
+						HorizontalOptions = LayoutOptions.Center,
+						Orientation = StackOrientation.Horizontal,
+						Children = {
+							CorrectLabel,
+							new Label {
+								Text = "/",
+								FontSize = 30
+							},
+							TotalLabel,
+						}
 					},
-					CorrectLabel,
-					new Label {
-						Text = "Mistakes"
-					},
-					MistakesLabel,
-					new Label {
-						Text = "Total"
-					},
-					TotalLabel,
 					ForwardBtn
 				}
 			};
@@ -60,7 +59,8 @@ namespace PicMatcher
 
 		void ForwardClicked(object sender, EventArgs e) {
 			var Parent = (PicMatcher)this.Parent;
-			Parent.NextPage ();
+			Parent.NextAndRemove (this);
+			_stats.Erase ();
 		}
 	}
 }

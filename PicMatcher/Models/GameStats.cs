@@ -10,7 +10,6 @@ namespace PicMatcher
 		public GameStats () {
 			Correct = 0;
 			Mistakes = 0;
-			Total = 0;
 		}
 
 		int _correct;
@@ -52,6 +51,11 @@ namespace PicMatcher
 			{
 				handler(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+
+		public void Erase() {
+			Correct = 0;
+			Mistakes = 0;
 		}
 	}
 }
