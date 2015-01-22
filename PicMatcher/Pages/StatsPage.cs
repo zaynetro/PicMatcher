@@ -16,13 +16,13 @@ namespace PicMatcher
 			BindingContext = _stats;
 
 			var CorrectLabel = new Label {
-				FontSize = 30,
+				FontSize = 40,
 				TextColor = Color.Green
 			};
 			CorrectLabel.SetBinding(Label.TextProperty, "Correct");
 
 			var TotalLabel = new Label {
-				FontSize = 30
+				FontSize = 40
 			};
 			TotalLabel.SetBinding(Label.TextProperty, "Total");
 
@@ -31,12 +31,17 @@ namespace PicMatcher
 			};
 			ForwardBtn.Clicked += ForwardClicked;
 
+			var SettingsBtn = new Button {
+				Text = "Configure"
+			};
+			SettingsBtn.Clicked += OpenSettings;
+
 			var StatsLayout = new StackLayout {
 				HorizontalOptions = LayoutOptions.Center,
 				Children = {
 					new Label {
 						Text = "Score",
-						FontSize = 35
+						FontSize = 50
 					},
 					new StackLayout {
 						HorizontalOptions = LayoutOptions.Center,
@@ -45,12 +50,16 @@ namespace PicMatcher
 							CorrectLabel,
 							new Label {
 								Text = "/",
-								FontSize = 30
+								FontSize = 40
 							},
 							TotalLabel,
 						}
 					},
-					ForwardBtn
+					ForwardBtn,
+					new Label {
+						Text = "Or swipe from right"
+					},
+					SettingsBtn
 				}
 			};
 
@@ -61,6 +70,10 @@ namespace PicMatcher
 			var Parent = (PicMatcher)this.Parent;
 			Parent.NextAndRemove (this);
 			_stats.Erase ();
+		}
+
+		void OpenSettings(object sender, EventArgs e) {
+			Navigation.PushModalAsync (new SettingsPage ());
 		}
 	}
 }
