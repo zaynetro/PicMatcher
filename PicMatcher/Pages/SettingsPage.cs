@@ -26,10 +26,13 @@ namespace PicMatcher
 					Text = cat.Name
 				};
 				cell.OnChanged += SwitchCellChanged;
-				if (cat.IsOn)
-					cell.On = true;
+				if (cat.IsOn) cell.On = true;
 				catSection.Add (cell);
 			}
+
+			// When no category is selected, select first one
+			if (_catsSelected == 0)
+				((SwitchCell)catSection [0]).On = true;
 
 			var tableView = new TableView {
 				Intent = TableIntent.Settings,
