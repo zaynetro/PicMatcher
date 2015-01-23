@@ -12,6 +12,7 @@ namespace PicMatcher
 		private int current = 0;
 		private bool IsStatPage = true;
 		public static int PerRound = 5;
+		public bool IsGameFinished = true;
 
 		public GameStats Stats;
 

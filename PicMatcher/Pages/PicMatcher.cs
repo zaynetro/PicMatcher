@@ -50,6 +50,26 @@ namespace PicMatcher
 
 			Device.BeginInvokeOnMainThread(NextAndRemoveTask);
 		}
+
+		protected override bool OnBackButtonPressed () {
+			// When game is not finished, ask user to keep playing
+//			if (!game.IsGameFinished) {
+//				AskToExit ();
+//				return true;
+//			}
+			return base.OnBackButtonPressed ();
+		}
+
+//		async void AskToExit() {
+//			var answer = await DisplayAlert ("Game is not finished", 
+//				"Are you sure you want to leave?", 
+//				"Leave", "Keep playing");
+//			if (answer) {
+//				// Explicitly set to true, so app can be closed
+//				game.IsGameFinished = true;
+//				SendBackButtonPressed ();
+//			}
+//		}
 	}
 }
 
