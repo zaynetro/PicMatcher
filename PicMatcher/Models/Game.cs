@@ -48,7 +48,7 @@ namespace PicMatcher
 		public ContentPage Next() {
 			if (IsStatPage) {
 				IsStatPage = false;
-				return new StatsPage (Stats);
+				return new StatsPage (Stats, Settings);
 			}
 
 			if (questions.Count == 0)
@@ -57,7 +57,7 @@ namespace PicMatcher
 			var isRoundEnd = (current + 1) % PerRound == 0;
 
 			if (isRoundEnd)
-				return new StatsPage (Stats);
+				return new StatsPage (Stats, Settings);
 
 			return new QuestionPage (questions [questions.Count - 1]);
 		}

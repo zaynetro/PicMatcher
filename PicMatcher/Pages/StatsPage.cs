@@ -7,12 +7,14 @@ namespace PicMatcher
 	{
 
 		GameStats _stats;
+		GameSettings _settings;
 			
 		public StatsPage () {}
 
-		public StatsPage (GameStats Stats)
+		public StatsPage (GameStats Stats, GameSettings Settings)
 		{
 			_stats = Stats;
+			_settings = Settings;
 			BindingContext = _stats;
 
 			var CorrectLabel = new Label {
@@ -36,6 +38,10 @@ namespace PicMatcher
 			};
 			SettingsBtn.Clicked += OpenSettings;
 
+			var ActivityBar = new ActivityIndicator {
+				IsRunning = false
+			};
+
 			var StatsLayout = new StackLayout {
 				HorizontalOptions = LayoutOptions.Center,
 				Children = {
@@ -55,13 +61,33 @@ namespace PicMatcher
 							TotalLabel,
 						}
 					},
-					ForwardBtn,
-					new Label {
-						Text = "Or swipe from right"
-					},
-					SettingsBtn
+					ActivityBar
 				}
 			};
+
+			// When settings are not loaded, wait for them
+			if (!_settings.IsLoaded) {
+				ActivityBar.IsRunning = true;
+
+				Settings.Loaded += (object sender, EventArgs e) => {
+					// TODO: remove repetition
+					StatsLayout.Children.Add (ForwardBtn);
+					StatsLayout.Children.Add (new Label {
+						Text = "Or swipe from right"
+					});
+					StatsLayout.Children.Add (SettingsBtn);
+					ActivityBar.IsRunning = false;
+				};
+
+			} else {
+				// TODO: remove repetition
+				StatsLayout.Children.Add (ForwardBtn);
+				StatsLayout.Children.Add (new Label {
+					Text = "Or swipe from right"
+				});
+				StatsLayout.Children.Add (SettingsBtn);
+			}
+
 
 			Content = StatsLayout;
 		}
@@ -73,7 +99,7 @@ namespace PicMatcher
 		}
 
 		void OpenSettings(object sender, EventArgs e) {
-			Navigation.PushModalAsync (new SettingsPage ());
+			Navigation.PushModalAsync (new SettingsPage (_settings));
 		}
 	}
 }
