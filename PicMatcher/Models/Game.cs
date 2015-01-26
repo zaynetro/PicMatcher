@@ -40,7 +40,10 @@ namespace PicMatcher
 		public Game () {
 			Stats = new GameStats ();
 			Settings = new GameSettings ();
-			LoadAndAdd ();
+
+			Settings.Loaded += (object sender, EventArgs e) => {
+				LoadAndAdd ();
+			};
 		}
 
 		/**
@@ -49,7 +52,7 @@ namespace PicMatcher
 		public ContentPage Next() {
 			if (IsStatPage) {
 				IsStatPage = false;
-				return new StatsPage (Stats, Settings);
+				return new StatsPage (Stats, ref Settings);
 			}
 
 			if (questions.Count == 0)
@@ -58,14 +61,14 @@ namespace PicMatcher
 			var isRoundEnd = (current + 1) % PerRound == 0;
 
 			if (isRoundEnd)
-				return new StatsPage (Stats, Settings);
+				return new StatsPage (Stats, ref Settings);
 
 			return new QuestionPage (questions [questions.Count - 1]);
 		}
 
 		public async void LoadAndAdd() {
 			try {
-				var q = await Fetcher.GetObject<Question> (Question.FormUri(1, "en"));
+				var q = await Fetcher.GetObject<Question> (Question.FormUri(Settings.SelectedCategories, Settings.SelectedLanguage));
 				q.Correct += (object sender, EventArgs e) => {
 					current++;
 					Stats.Correct++;

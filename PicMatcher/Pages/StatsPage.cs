@@ -11,7 +11,7 @@ namespace PicMatcher
 			
 		public StatsPage () {}
 
-		public StatsPage (GameStats Stats, GameSettings Settings)
+		public StatsPage (GameStats Stats, ref GameSettings Settings)
 		{
 			_stats = Stats;
 			_settings = Settings;
@@ -99,7 +99,7 @@ namespace PicMatcher
 		}
 
 		void OpenSettings(object sender, EventArgs e) {
-			Navigation.PushModalAsync (new SettingsPage (_settings));
+			Navigation.PushModalAsync (new SettingsPage (ref _settings));
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace PicMatcher
 {
@@ -22,6 +23,15 @@ namespace PicMatcher
 
 		public static string FormUri (int cat, string lang) {
 			return String.Format ("question?cat={0}&lang={1}", cat, lang);
+		}
+
+		public static string FormUri (List<Category> cats, Language lang) {
+			var catsParams = "";
+			foreach (Category cat in cats) {
+				catsParams += "&cat[]=" + cat.Category_id;
+			}
+			catsParams = catsParams.Substring (1);
+			return String.Format ("question?{0}&lang={1}", catsParams, lang.Language_id);
 		}
 
 		/**

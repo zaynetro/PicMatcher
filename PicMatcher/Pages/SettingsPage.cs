@@ -8,12 +8,11 @@ namespace PicMatcher
 	{
 		GameSettings _settings;
 		Dictionary<string, Category> _catsHash = new Dictionary<string, Category> (); 
-		Dictionary<string, Language> _langHash = new Dictionary<string, Language> ();
-		int _catsSelected = 0;
+		Dictionary<int, Language> _langHash = new Dictionary<int, Language> ();
 
 		public SettingsPage () {}
 
-		public SettingsPage (GameSettings Settings) {
+		public SettingsPage (ref GameSettings Settings) {
 
 			_settings = Settings;
 
@@ -25,14 +24,14 @@ namespace PicMatcher
 				var cell = new SwitchCell {
 					Text = cat.Name
 				};
+				// If category is selected, turn the switch on
+				// TODO: optimize
+				if (_settings.SelectedCategories.IndexOf (cat) > -1) {
+					cell.On = true;
+				}
 				cell.OnChanged += SwitchCellChanged;
-				if (cat.IsOn) cell.On = true;
 				catSection.Add (cell);
 			}
-
-			// When no category is selected, select first one
-			if (_catsSelected == 0)
-				((SwitchCell)catSection [0]).On = true;
 
 			var tableView = new TableView {
 				Intent = TableIntent.Settings,
@@ -47,11 +46,19 @@ namespace PicMatcher
 				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 			// Populate picker
+			var i = 0;
+			var selectedIndex = 0;
 			foreach (Language lang in Settings.Languages) {
-				_langHash.Add (lang.Name, lang);
+				_langHash.Add (i, lang);
 				languagePicker.Items.Add (lang.Name);
+				languagePicker.SelectedIndexChanged += LanguageSelected;
+
+				if (lang.Equals (_settings.SelectedLanguage))
+					selectedIndex = i;
+
+				i++;
 			}
-			languagePicker.SelectedIndex = 0;
+			languagePicker.SelectedIndex = selectedIndex;
 
 			var languageGroup = new StackLayout {
 				Padding = 20,
@@ -79,21 +86,24 @@ namespace PicMatcher
 
 		void SwitchCellChanged(object sender, EventArgs e) {
 			var cell = (SwitchCell)sender;
-			// Get Category position
-			var catIndex = _settings.Categories.IndexOf (_catsHash [cell.Text]);
-			// Update IsEnabled field
-			var isOn = cell.On;
-			_settings.Categories [catIndex].IsOn = isOn;
+			// Get Category
+			var cat = _catsHash [cell.Text];
 
 			// Count number of selected categories
-			if (isOn)
-				_catsSelected++;
-			else
-				_catsSelected--;
+			if (cell.On) {
+				_settings.SelectCategory (cat);
+			} else {
+				_settings.DeselectCategory (cat);
+			}
+		}
+
+		void LanguageSelected(object sender, EventArgs e) {
+			var picker = (Picker)sender;
+			_settings.SelectedLanguage = _langHash [picker.SelectedIndex];
 		}
 
 		bool CanLeave() {
-			if(_catsSelected == 0) {
+			if(_settings.SelectedCategories.Count == 0) {
 				DisplayAlert("No category selected", "Select at least one category", "OK");
 				return false;
 			}
