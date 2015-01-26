@@ -21,10 +21,6 @@ namespace PicMatcher
 				Mistake (this, e);
 		}
 
-		public static string FormUri (int cat, string lang) {
-			return String.Format ("question?cat={0}&lang={1}", cat, lang);
-		}
-
 		public static string FormUri (List<Category> cats, Language lang) {
 			var catsParams = "";
 			foreach (Category cat in cats) {
