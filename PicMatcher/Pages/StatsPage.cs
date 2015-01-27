@@ -95,7 +95,7 @@ namespace PicMatcher
 		void ForwardClicked(object sender, EventArgs e) {
 			var Parent = (PicMatcher)this.Parent;
 			Parent.NextAndRemove (this);
-			_stats.Erase ();
+			_stats.Clear ();
 		}
 
 		void OpenSettings(object sender, EventArgs e) {

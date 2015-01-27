@@ -8,30 +8,30 @@ namespace PicMatcher
 
 	public class PicMatcher : CarouselPage
 	{
-		private Game game;
+		Game _game;
 
 		public PicMatcher ()
 		{
 			this.Title = "PicMatcher";
 
-			game = new Game ();
-			this.Children.Add (game.Next());
+			_game = new Game ();
+			this.Children.Add (_game.Next());
 
-			game.Added += (object sender, EventArgs e) => {
-				this.Children.Add (game.Next());
+			_game.Added += (object sender, EventArgs e) => {
+				this.Children.Add (_game.Next());
 			};
 
-			game.NextPage += (object sender, EventArgs e) => {
+			_game.NextPage += (object sender, EventArgs e) => {
 				NextPage();
 			};
 
-			game.Error += async (object sender, EventArgs e) => {
+			_game.Error += async (object sender, EventArgs e) => {
 				var answer = await DisplayAlert("What a shame", "Something went wrong", "Try again", "Not now");
-				if(answer) game.LoadAndAdd();
+				if(answer) _game.LoadAndAdd();
 			};
 
 			// Remove all children following the current page
-			game.Clean += (object sender, EventArgs e) => {
+			_game.Clean += (object sender, EventArgs e) => {
 				var index = Children.IndexOf(CurrentPage);
 				var length = Children.Count;
 				for(var i = index + 1; i < length; i++) {
@@ -47,7 +47,7 @@ namespace PicMatcher
 		}
 
 		public void NextQuestion () {
-			game.LoadAndAdd();
+			_game.LoadAndAdd();
 		}
 
 		public void NextAndRemove (ContentPage page) {
@@ -60,14 +60,14 @@ namespace PicMatcher
 			Device.BeginInvokeOnMainThread(NextAndRemoveTask);
 		}
 
-		protected override bool OnBackButtonPressed () {
+//		protected override bool OnBackButtonPressed () {
 			// When game is not finished, ask user to keep playing
 //			if (!game.IsGameFinished) {
 //				AskToExit ();
 //				return true;
 //			}
-			return base.OnBackButtonPressed ();
-		}
+//			return base.OnBackButtonPressed ();
+//		}
 
 //		async void AskToExit() {
 //			var answer = await DisplayAlert ("Game is not finished", 

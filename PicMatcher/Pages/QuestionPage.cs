@@ -6,9 +6,9 @@ namespace PicMatcher
 {
 	public class QuestionPage : ContentPage
 	{
-		private Question question { get; set; }
-		private Image Img { get; set; }
-		private Button CorrectBtn { get; set; }
+		Question _question { get; set; }
+		Image _img { get; set; }
+		Button _correctBtn { get; set; }
 
 		public QuestionPage () {}
 
@@ -22,15 +22,15 @@ namespace PicMatcher
 			 *   - Possible answers
 			 */
 
-			question = q;
+			_question = q;
 
-			Img = new Image {
-				Source = QuestionPage.WrapImage(question.Picture),
+			_img = new Image {
+				Source = QuestionPage.WrapImage(_question.Picture),
 				WidthRequest = 256,
 				HeightRequest = 256
 			};
 
-			var answers = question.Answers;
+			var answers = _question.Answers;
 			var buttons = new Button[4];
 
 			var AnswersLayout = new Grid {
@@ -55,8 +55,8 @@ namespace PicMatcher
 					};
 					buttons [k].Clicked += onAnswerClicked;
 
-					if (question.Answer.Answer_id == answers [k].Answer_id) {
-						CorrectBtn = buttons [k];
+					if (_question.Answer.Answer_id == answers [k].Answer_id) {
+						_correctBtn = buttons [k];
 					}
 
 					AnswersLayout.Children.Add (buttons [k], i, j);
@@ -66,7 +66,7 @@ namespace PicMatcher
 			var QuestionLayout = new StackLayout {
 				VerticalOptions = LayoutOptions.CenterAndExpand,
 				Children = {
-					Img,
+					_img,
 					AnswersLayout
 				}
 			};
@@ -81,13 +81,13 @@ namespace PicMatcher
 			var button = (Button)Sender;
 			var delay = 400;
 
-			if (question.IsCorrectAnswer (button.Text)) {
+			if (_question.IsCorrectAnswer (button.Text)) {
 				// Mark as correct
-				Img.Source = QuestionPage.WrapImage(Question.CorrectImg);
+				_img.Source = QuestionPage.WrapImage(Question.CorrectImg);
 			} else {
 				// Mark as wrong
-				Img.Source = QuestionPage.WrapImage(Question.WrongImg);
-				CorrectBtn.BackgroundColor = Color.Green;
+				_img.Source = QuestionPage.WrapImage(Question.WrongImg);
+				_correctBtn.BackgroundColor = Color.Green;
 				delay = 1000;
 			}
 

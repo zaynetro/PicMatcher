@@ -10,8 +10,9 @@ namespace PicMatcher
 		private ObservableCollection<Question> questions = new ObservableCollection<Question>();
 
 		int _current = 0;
+		bool _isGameFinished = true;
+
 		public static int PerRound = 5;
-		public bool IsGameFinished = true;
 
 		public GameStats Stats;
 		public GameSettings Settings;
@@ -59,7 +60,7 @@ namespace PicMatcher
 
 		void PrepareForGame() {
 			_current = 0;
-			IsGameFinished = false;
+			_isGameFinished = false;
 		}
 
 		/**
@@ -67,9 +68,9 @@ namespace PicMatcher
 		 */
 		public ContentPage Next() {
 			if (_current >= PerRound)
-				IsGameFinished = true;
+				_isGameFinished = true;
 
-			if (IsGameFinished) {
+			if (_isGameFinished) {
 				PrepareForGame ();
 				return new StatsPage (Stats, ref Settings);
 			}

@@ -53,7 +53,7 @@ namespace PicMatcher
 			}
 		}
 
-		public void Erase() {
+		public void Clear() {
 			Correct = 0;
 			Mistakes = 0;
 		}
