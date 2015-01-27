@@ -99,7 +99,12 @@ namespace PicMatcher
 		}
 
 		void OpenSettings(object sender, EventArgs e) {
-			Navigation.PushModalAsync (new SettingsPage (ref _settings));
+			var page = new SettingsPage (ref _settings);
+			Navigation.PushModalAsync (page);
+
+			page.Disappearing += (object pageSender, EventArgs pageE) => {
+				_settings.OnChanged(EventArgs.Empty);
+			};
 		}
 	}
 }

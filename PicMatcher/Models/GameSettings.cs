@@ -10,12 +10,18 @@ namespace PicMatcher
 		public bool IsLoaded = false;
 
 		public event EventHandler Loaded;
+		public event EventHandler Changed;
 
 		protected virtual void OnLoaded(EventArgs e) {
 			IsLoaded = true;
 
 			if (Loaded != null)
 				Loaded (this, e);
+		}
+
+		public virtual void OnChanged(EventArgs e) {
+			if (Changed != null)
+				Changed (this, e);
 		}
 
 		public GameSettings () {

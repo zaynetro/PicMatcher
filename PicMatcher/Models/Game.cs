@@ -44,6 +44,11 @@ namespace PicMatcher
 			Settings.Loaded += (object sender, EventArgs e) => {
 				LoadAndAdd ();
 			};
+
+			Settings.Changed += (object sender, EventArgs e) => {
+				questions.Clear ();
+				LoadAndAdd ();
+			};
 		}
 
 		/**
@@ -72,11 +77,13 @@ namespace PicMatcher
 				q.Correct += (object sender, EventArgs e) => {
 					current++;
 					Stats.Correct++;
+					questions.Remove(q);
 				};
 
 				q.Mistake += (object sender, EventArgs e) => {
 					current++;
 					Stats.Mistakes++;
+					questions.Remove(q);
 				};
 				questions.Add (q);
 				OnAdded (EventArgs.Empty);
