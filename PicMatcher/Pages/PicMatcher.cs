@@ -29,6 +29,15 @@ namespace PicMatcher
 				var answer = await DisplayAlert("What a shame", "Something went wrong", "Try again", "Not now");
 				if(answer) game.LoadAndAdd();
 			};
+
+			// Remove all children following the current page
+			game.Clean += (object sender, EventArgs e) => {
+				var index = Children.IndexOf(CurrentPage);
+				var length = Children.Count;
+				for(var i = index + 1; i < length; i++) {
+					Children.RemoveAt (i);
+				}
+			};
 		}
 
 		public void NextPage() {

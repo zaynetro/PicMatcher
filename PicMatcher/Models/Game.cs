@@ -9,18 +9,17 @@ namespace PicMatcher
 	{
 		private ObservableCollection<Question> questions = new ObservableCollection<Question>();
 
-		private int current = 0;
-		private bool IsStatPage = true;
+		int _current = 0;
 		public static int PerRound = 5;
 		public bool IsGameFinished = true;
 
 		public GameStats Stats;
-
 		public GameSettings Settings;
 
 		public event EventHandler Added;
 		public event EventHandler Error;
 		public event EventHandler NextPage;
+		public event EventHandler Clean;
 
 		protected virtual void OnAdded(EventArgs e) {
 			if (Added != null)
@@ -37,6 +36,11 @@ namespace PicMatcher
 				NextPage (this, e);
 		}
 
+		protected virtual void OnClean(EventArgs e) {
+			if (Clean != null)
+				Clean (this, e);
+		}
+
 		public Game () {
 			Stats = new GameStats ();
 			Settings = new GameSettings ();
@@ -47,26 +51,34 @@ namespace PicMatcher
 
 			Settings.Changed += (object sender, EventArgs e) => {
 				questions.Clear ();
+				OnClean(EventArgs.Empty);
+				PrepareForGame ();
 				LoadAndAdd ();
 			};
+		}
+
+		void PrepareForGame() {
+			_current = 0;
+			IsGameFinished = false;
 		}
 
 		/**
 		 * Return next question
 		 */
 		public ContentPage Next() {
-			if (IsStatPage) {
-				IsStatPage = false;
+			if (_current >= PerRound)
+				IsGameFinished = true;
+
+			if (IsGameFinished) {
+				PrepareForGame ();
 				return new StatsPage (Stats, ref Settings);
 			}
 
+			_current++;
+
+			// Handle no questions error
 			if (questions.Count == 0)
 				throw new Exception ("No more questions");
-
-			var isRoundEnd = (current + 1) % PerRound == 0;
-
-			if (isRoundEnd)
-				return new StatsPage (Stats, ref Settings);
 
 			return new QuestionPage (questions [questions.Count - 1]);
 		}
@@ -75,13 +87,11 @@ namespace PicMatcher
 			try {
 				var q = await Fetcher.GetObject<Question> (Question.FormUri(Settings.SelectedCategories, Settings.SelectedLanguage));
 				q.Correct += (object sender, EventArgs e) => {
-					current++;
 					Stats.Correct++;
 					questions.Remove(q);
 				};
 
 				q.Mistake += (object sender, EventArgs e) => {
-					current++;
 					Stats.Mistakes++;
 					questions.Remove(q);
 				};
